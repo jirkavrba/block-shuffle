@@ -1,5 +1,6 @@
 plugins {
     id("java")
+    id("com.github.johnrengelman.shadow") version "7.0.0"
     kotlin("jvm") version "1.5.21"
 }
 
