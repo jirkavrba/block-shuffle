@@ -15,24 +15,45 @@ import org.bukkit.entity.Player
 
 data class GamesManager(
     val plugin: BlockShuffle,
-    var playing: Boolean = false,
     var players: List<Player> = listOf(),
     var game: Game? = null,
     var handle: Int? = null
 )
 {
+    val playing: Boolean
+    get() = game != null
+
     private val key = NamespacedKey(plugin, "game_bar")
 
     fun createNewGame(players: List<Player>): Game
     {
-        this.playing = true
         this.players = players
         this.game = createNewRound(Game(players))
 
         return game as Game
     }
 
-    fun createNewRound(game: Game): Game
+    // TODO: Better naming
+    fun foundBlock(player: Player)
+    {
+        if (!playing) return
+
+        this.players.forEach { it.sendMessage("${ChatColor.AQUA}${it.displayName}${ChatColor.RESET} found his block!") }
+
+        val game = this.game ?: return
+        val round = game.round ?: return
+        val remaining = round.remainingBlocks - player
+
+        game.round = round.copy(remainingBlocks = remaining)
+
+        if (remaining.isEmpty())
+        {
+            this.players.forEach { it.sendMessage("${ChatColor.GREEN}All players found their blocks!${ChatColor.RESET}") }
+            this.game = createNewRound(game)
+        }
+    }
+
+    private fun createNewRound(game: Game): Game
     {
         // TODO: Make this configurable
         val difficulty = Difficulty.Easy
