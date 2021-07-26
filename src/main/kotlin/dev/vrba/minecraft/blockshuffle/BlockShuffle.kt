@@ -2,7 +2,6 @@ package dev.vrba.minecraft.blockshuffle
 
 import dev.vrba.minecraft.blockshuffle.command.BlockShuffleCommand
 import dev.vrba.minecraft.blockshuffle.game.Configuration
-import dev.vrba.minecraft.blockshuffle.game.GamesManager
 import dev.vrba.minecraft.blockshuffle.game.createDefaultGameConfiguration
 import dev.vrba.minecraft.blockshuffle.game.loadGameConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
@@ -13,7 +12,7 @@ class BlockShuffle : JavaPlugin()
 {
     val manager: GamesManager = GamesManager()
 
-    private lateinit var gameConfiguration: Configuration
+    lateinit var gameConfiguration: Configuration
 
     override fun onEnable()
     {
