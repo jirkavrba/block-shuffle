@@ -6,5 +6,6 @@ import org.bukkit.entity.Player
 data class Round(
     val difficulty: Difficulty,
     val remainingBlocks: Map<Player, Material>,
-    val remainingSeconds: Int
+    val timeLimit: Int,
+    val timeElapsed: Int = 0
 )
