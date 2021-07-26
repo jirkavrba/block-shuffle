@@ -7,7 +7,7 @@ import org.bukkit.Material.*
 import org.bukkit.configuration.file.FileConfiguration
 import java.io.File
 
-private fun Int.minutes(): Int = this * 60 * 1000
+private fun Int.minutes(): Int = this * 60
 
 data class Configuration(
     val timeLimits: Map<Difficulty, Int>,

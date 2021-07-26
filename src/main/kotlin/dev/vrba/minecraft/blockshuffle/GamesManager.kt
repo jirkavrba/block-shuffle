@@ -63,7 +63,7 @@ data class GamesManager(
         val round = game?.round ?: return
         val players = round.remainingBlocks.keys.toList()
 
-        round.timeElapsed += 10
+        round.timeElapsed++
 
         if (round.timeElapsed >= round.timeLimit)
         {
@@ -84,7 +84,7 @@ data class GamesManager(
 
     private fun broadcastRound(players: List<Player>, round: Round)
     {
-        val seconds = round.timeLimit / 1000
+        val seconds = round.timeLimit
         val time = if (seconds > 60) "${seconds / 60} minutes"
         else "$seconds seconds"
 
@@ -111,14 +111,14 @@ data class GamesManager(
             BarStyle.SOLID,
             BarFlag.DARKEN_SKY
         )
-            .also {
-                players.map { player -> it.addPlayer(player) }
-                it.isVisible = true
-                it.progress = 1.0
-            }
 
-        bar.progress = 1.0 - (round.timeElapsed.toFloat() / round.timeLimit.toFloat())
-        bar.color = when (bar.progress)
+        players.map { player -> bar.addPlayer(player) }
+
+        val progress = 1.0 - (round.timeElapsed.toFloat() / round.timeLimit.toFloat())
+
+        bar.progress = progress
+        bar.isVisible = true
+        bar.color = when (progress)
         {
             in 0.0..0.25 -> BarColor.RED
             in 0.25..0.5 -> BarColor.YELLOW
