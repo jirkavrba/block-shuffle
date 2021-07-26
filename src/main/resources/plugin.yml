@@ -1,0 +1,5 @@
+name: Block Shuffle
+version: @version@
+main: dev.vrba.minecraft.blockshuffle.BlockShuffle
+api-version: 1.17
+description: Block shuffle minigame
