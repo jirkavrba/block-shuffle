@@ -1,6 +1,8 @@
 plugins {
     id("java")
+    id("com.github.johnrengelman.shadow") version "7.0.0"
     kotlin("jvm") version "1.5.21"
+
 }
 
 group = "dev.vrba.minecraft"
@@ -19,5 +21,7 @@ repositories {
 }
 
 dependencies {
+    implementation(kotlin("stdlib-common"))
+    implementation(kotlin("stdlib"))
     compileOnly("org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT")
 }
