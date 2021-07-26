@@ -4,7 +4,7 @@ import dev.vrba.minecraft.blockshuffle.game.Difficulty
 import dev.vrba.minecraft.blockshuffle.game.Game
 import dev.vrba.minecraft.blockshuffle.game.Round
 import org.bukkit.Bukkit
-import org.bukkit.ChatColor
+import org.bukkit.ChatColor.*
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.boss.BarColor
@@ -12,6 +12,7 @@ import org.bukkit.boss.BarFlag
 import org.bukkit.boss.BarStyle
 import org.bukkit.boss.BossBar
 import org.bukkit.entity.Player
+import org.bukkit.scheduler.BukkitTask
 
 data class GamesManager(
     val plugin: BlockShuffle,
@@ -33,12 +34,11 @@ data class GamesManager(
         return game as Game
     }
 
-    // TODO: Better naming
-    fun foundBlock(player: Player)
+    fun handlePlayerFoundBlock(player: Player)
     {
         if (!playing) return
 
-        this.players.forEach { it.sendMessage("${ChatColor.AQUA}${it.displayName}${ChatColor.RESET} found his block!") }
+        this.players.forEach { it.sendMessage("$AQUA ${it.displayName} $RESET found his block!") }
 
         val game = this.game ?: return
         val round = game.round ?: return
@@ -48,9 +48,48 @@ data class GamesManager(
 
         if (remaining.isEmpty())
         {
-            this.players.forEach { it.sendMessage("${ChatColor.GREEN}All players found their blocks!${ChatColor.RESET}") }
+            this.players.forEach { it.sendMessage("$GREEN All players found their blocks!$RESET") }
             this.game = createNewRound(game)
         }
+    }
+
+    private fun handleEndOfRound()
+    {
+        if (!playing) return
+
+        this.players.forEach { it.sendMessage("$RED The time is over! $RESET") }
+
+        val game = this.game ?: return
+        val round = game.round ?: return
+        val bar = Bukkit.getBossBar(key) ?: return
+
+        val losers = round.remainingBlocks.keys
+
+        losers.forEach {
+            bar.removePlayer(it)
+            it.sendTitle("$RED Game over! $RESET", "You will not receive next blocks.", 20, 200, 20)
+        }
+
+        this.players.forEach {
+            it.sendMessage(
+                "Players who failed this round:\n" +
+                losers.joinToString("\n", transform = Player::getDisplayName)
+            )
+        }
+
+        val remaining = game.players - losers
+
+        if (remaining.isEmpty())
+        {
+            this.players.forEach { it.sendMessage("$RED No players remaining, the game is over! $RESET") }
+            this.game = null
+
+            Bukkit.removeBossBar(key)
+
+            return
+        }
+
+        createNewRound(game.copy(players = game.players - losers))
     }
 
     private fun createNewRound(game: Game): Game
@@ -76,6 +115,7 @@ data class GamesManager(
 
     private fun startSchedulerTask()
     {
+        handle?.let { Bukkit.getScheduler().cancelTask(it) }
         handle = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this::tick, 0, 20)
     }
 
@@ -91,6 +131,10 @@ data class GamesManager(
             // Handle end of the round
             handle?.let { Bukkit.getScheduler().cancelTask(it) }
             handle = null
+
+            handleEndOfRound()
+
+            return
         }
 
         updateBossBar(players, round)
@@ -113,10 +157,10 @@ data class GamesManager(
             round.remainingBlocks[player]
                 ?.let {
                     player.sendTitle(
-                        "${ChatColor.RED} ${it.name} ${ChatColor.RESET}",
-                        "You have ${ChatColor.AQUA}$time${ChatColor.RESET} remaining", 20, 200, 20
+                        "$RED ${it.name} $RESET",
+                        "You have $AQUA $time $RESET remaining", 20, 200, 20
                     )
-                    player.sendMessage("You have $time to sneak (shift) on ${it.name}")
+                    player.sendMessage("You have $AQUA $time $RESET to sneak (shift) on $RED ${it.name} $RESET")
                 }
         }
 

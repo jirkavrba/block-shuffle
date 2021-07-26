@@ -2,6 +2,8 @@ package dev.vrba.minecraft.blockshuffle.listener
 
 import dev.vrba.minecraft.blockshuffle.GamesManager
 import org.bukkit.Particle
+import org.bukkit.Sound
+import org.bukkit.SoundCategory
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerToggleSneakEvent
@@ -24,9 +26,10 @@ class GameListener(private val manager: GamesManager) : Listener
 
         if (block.type == target)
         {
-            player.world.spawnParticle(Particle.TOTEM, location, 1000)
+            player.world.spawnParticle(Particle.TOTEM, location, 100)
+            player.playSound(location, Sound.BLOCK_BELL_RESONATE, 1.0f, 1.0f)
 
-            manager.foundBlock(player)
+            manager.handlePlayerFoundBlock(player)
         }
     }
 
