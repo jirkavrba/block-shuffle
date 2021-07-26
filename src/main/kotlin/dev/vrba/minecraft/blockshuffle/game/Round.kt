@@ -7,5 +7,5 @@ data class Round(
     val difficulty: Difficulty,
     val remainingBlocks: Map<Player, Material>,
     val timeLimit: Int,
-    val timeElapsed: Int = 0
+    var timeElapsed: Int = 0
 )
