@@ -3,3 +3,10 @@ version: 1.0-SNAPSHOT
 main: dev.vrba.minecraft.blockshuffle.BlockShuffle
 api-version: 1.17
 description: Block shuffle minigame
+author: Jiří Vrba
+commands:
+  block-shuffle:
+    aliases:
+      - block-shuffle-start
+    description: Starts a new game of Block Shuffle
+    usage: /block-shuffle

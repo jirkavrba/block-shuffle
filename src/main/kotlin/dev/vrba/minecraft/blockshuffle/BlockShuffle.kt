@@ -1,6 +1,8 @@
 package dev.vrba.minecraft.blockshuffle
 
+import dev.vrba.minecraft.blockshuffle.command.BlockShuffleCommand
 import dev.vrba.minecraft.blockshuffle.game.Configuration
+import dev.vrba.minecraft.blockshuffle.game.GamesManager
 import dev.vrba.minecraft.blockshuffle.game.createDefaultGameConfiguration
 import dev.vrba.minecraft.blockshuffle.game.loadGameConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
@@ -9,11 +11,14 @@ import java.io.File
 
 class BlockShuffle : JavaPlugin()
 {
+    val manager: GamesManager = GamesManager()
+
     private lateinit var gameConfiguration: Configuration
 
     override fun onEnable()
     {
         loadConfiguration()
+        registerCommandExecutors()
     }
 
     private fun loadConfiguration()
@@ -24,5 +29,10 @@ class BlockShuffle : JavaPlugin()
         // If the configuration file doesn't exist, create a new one
         gameConfiguration = if (file.exists()) loadGameConfiguration(configuration, file)
                             else createDefaultGameConfiguration(configuration, file)
+    }
+
+    private fun registerCommandExecutors()
+    {
+        getCommand("block-shuffle")?.setExecutor(BlockShuffleCommand(this))
     }
 }
