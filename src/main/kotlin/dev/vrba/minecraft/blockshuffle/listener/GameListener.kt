@@ -26,8 +26,8 @@ class GameListener(private val manager: GamesManager) : Listener
 
         if (block.type == target)
         {
-            player.world.spawnParticle(Particle.TOTEM, location, 100)
-            player.playSound(location, Sound.BLOCK_BELL_RESONATE, 1.0f, 1.0f)
+            player.world.spawnParticle(Particle.TOTEM, location, 1000)
+            player.playSound(location, Sound.BLOCK_BELL_USE, 1.0f, 1.0f)
 
             manager.handlePlayerFoundBlock(player)
         }
